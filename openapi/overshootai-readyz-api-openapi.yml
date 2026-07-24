@@ -1,0 +1,26 @@
+openapi: 3.1.0
+info:
+  title: Inference Service Billing Readyz API
+  version: 0.4.0
+  description: Pricing, prepaid balance, and checkout.
+tags:
+- name: Readyz
+paths:
+  /readyz:
+    get:
+      summary: Readyz
+      operationId: readyz_readyz_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Readyz
+components:
+  securitySchemes:
+    API Key:
+      type: http
+      description: Bearer <api_key>
+      scheme: bearer

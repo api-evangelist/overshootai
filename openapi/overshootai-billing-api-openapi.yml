@@ -1,0 +1,234 @@
+openapi: 3.1.0
+info:
+  title: Inference Service Billing API
+  version: 0.4.0
+  description: Pricing, prepaid balance, and checkout.
+tags:
+- name: Billing
+  description: Pricing, prepaid balance, and checkout.
+paths:
+  /billing/pricing:
+    get:
+      tags:
+      - Billing
+      operationId: listPricing
+      summary: List pricing
+      description: 'List public model prices. No auth required. Money fields use **integer microcents**:
+
+        `1 cent = 1,000,000 microcents`.
+
+        '
+      security: []
+      servers:
+      - url: https://api.overshoot.ai
+      responses:
+        '200':
+          description: List of public prices.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pricing'
+  /billing/pricing/{model}:
+    get:
+      tags:
+      - Billing
+      operationId: getPricing
+      summary: Get model pricing
+      description: Return pricing for one model. The `model` path may contain slashes.
+      security: []
+      servers:
+      - url: https://api.overshoot.ai
+      parameters:
+      - name: model
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Model identifier (may contain `/`).
+      responses:
+        '200':
+          description: Pricing for the requested model.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pricing'
+        '404':
+          description: Price not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /billing/accounts/me/balance:
+    get:
+      tags:
+      - Billing
+      operationId: getBalance
+      summary: Get prepaid balance
+      description: 'Return the authenticated user''s prepaid balance. `balance_cents` is for display;
+
+        `balance_microcents` is the exact billing unit. Inference can return `402` when
+
+        billing denies a request.
+
+        '
+      servers:
+      - url: https://api.overshoot.ai
+      responses:
+        '200':
+          description: Current balance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /billing/checkout:
+    post:
+      tags:
+      - Billing
+      operationId: createCheckout
+      summary: Create checkout session
+      description: 'Create a checkout session for buying prepaid credits. `amount_cents` must be at
+
+        least `100`.
+
+        '
+      servers:
+      - url: https://api.overshoot.ai
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+      responses:
+        '200':
+          description: Checkout URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+components:
+  schemas:
+    ValidationError:
+      type: object
+      description: Validation failure shape used by chat completions and billing.
+      properties:
+        error:
+          type: string
+          example: validation_error
+        message:
+          type: string
+          example: Request validation failed
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              loc:
+                type: array
+                items:
+                  type: string
+              msg:
+                type: string
+              type:
+                type: string
+    Pricing:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        model:
+          type: string
+          example: google/gemma-4-26B-A4B-it
+        provider:
+          type: string
+          example: google
+        version:
+          type: string
+          example: '2026-06-01'
+        input_microcents_per_token:
+          type: integer
+          example: 10
+        output_microcents_per_token:
+          type: integer
+          example: 40
+        cached_input_microcents_per_token:
+          type: integer
+          example: 2
+        public:
+          type: boolean
+          example: true
+      required:
+      - id
+      - model
+      - provider
+      - version
+      - input_microcents_per_token
+      - output_microcents_per_token
+      - public
+    CheckoutRequest:
+      type: object
+      properties:
+        amount_cents:
+          type: integer
+          minimum: 100
+          description: Amount to charge, in cents. Must be at least `100`.
+      required:
+      - amount_cents
+    Error:
+      type: object
+      description: Standard error body used by stream-lifecycle and billing endpoints.
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    BalanceResponse:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        balance_microcents:
+          type: integer
+          description: Exact billing unit. `1 cent = 1,000,000 microcents`.
+        balance_cents:
+          type: integer
+          description: Display value.
+      required:
+      - user_id
+      - balance_microcents
+      - balance_cents
+    CheckoutResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Hosted checkout URL.
+      required:
+      - url
+  securitySchemes:
+    API Key:
+      type: http
+      description: Bearer <api_key>
+      scheme: bearer

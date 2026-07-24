@@ -1,0 +1,81 @@
+openapi: 3.1.0
+info:
+  title: Inference Service Billing Models API
+  version: 0.4.0
+  description: Pricing, prepaid balance, and checkout.
+tags:
+- name: Models
+paths:
+  /v1/models:
+    get:
+      summary: List Models
+      operationId: list_models_v1_models_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAIModelsResponse'
+      tags:
+      - Models
+  /models:
+    get:
+      summary: List Models
+      operationId: list_models_models_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAIModelsResponse'
+      tags:
+      - Models
+components:
+  schemas:
+    OpenAIModelInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        object:
+          type: string
+          title: Object
+          default: model
+        created:
+          type: integer
+          title: Created
+        owned_by:
+          type: string
+          title: Owned By
+          default: overshoot
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - id
+      - created
+      - status
+      title: OpenAIModelInfo
+    OpenAIModelsResponse:
+      properties:
+        object:
+          type: string
+          title: Object
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/OpenAIModelInfo'
+          type: array
+          title: Data
+      type: object
+      required:
+      - data
+      title: OpenAIModelsResponse
+  securitySchemes:
+    API Key:
+      type: http
+      description: Bearer <api_key>
+      scheme: bearer
