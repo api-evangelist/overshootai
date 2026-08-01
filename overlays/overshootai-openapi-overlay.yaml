@@ -1,0 +1,26 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Overshoot API
+  version: 1.0.0
+extends: openapi/overshootai-openapi.yaml
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-rating: 4
+      x-api-evangelist-notes: >-
+        OpenAI-compatible real-time video understanding API. Bearer API-key auth
+        (ovs_ prefix). Rich, well-documented error surface; no OAuth, no webhooks,
+        no dated changelog, no status page at capture time.
+  - target: $.info
+    update:
+      x-artifact-authentication: authentication/overshootai-authentication.yml
+      x-artifact-errors: errors/overshootai-problem-types.yml
+      x-artifact-conventions: conventions/overshootai-conventions.yml
+      x-artifact-lifecycle: lifecycle/overshootai-lifecycle.yml
+      x-artifact-data-model: data-model/overshootai-data-model.yml
+  - target: $.tags
+    update:
+      - name: AgentReady
+        description: >-
+          Overshoot exposes an OpenAI-compatible interface, making its VLMs directly
+          consumable by agent frameworks; see skills/ for packaged agent flows.

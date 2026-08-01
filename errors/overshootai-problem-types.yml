@@ -1,0 +1,88 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/overshootai-openapi.yaml
+enriched_from: https://docs.overshoot.ai/api-reference/errors.md
+format: custom
+note: >-
+  Overshoot does not use RFC 9457 application/problem+json. Two envelopes are used:
+  stream-lifecycle and billing endpoints return {"detail": "<message>"}; the
+  /chat/completions endpoint returns {"detail": {"error": {"message","type","code"}}}.
+  Validation failures use {"error":"validation_error","message","details":[...]}.
+envelopes:
+  simple:
+    shape: '{ "detail": "<message>" }'
+    used_by: [createStream, getStream, deleteStream, keepaliveStream, getBalance, createCheckout]
+  chat:
+    shape: '{ "detail": { "error": { "message": "...", "type": "...", "code": "..." } } }'
+    used_by: [chatCompletions]
+    error_types: [stream_error, validation_error, provider_error, upstream_error, billing_error, rate_limit_error, internal_error]
+  validation:
+    shape: '{ "error": "validation_error", "message": "...", "details": [ { "loc": [...], "msg": "...", "type": "..." } ] }'
+problems:
+  - status: 400
+    title: Bad request
+    detail: Invalid stream URL/query, invalid segment, unsupported model/media combination, or provider safety block
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+  - status: 401
+    title: Unauthorized
+    detail: API key missing, unknown, or revoked
+    source_operation: openapi/overshootai-openapi.yaml#createStream
+  - status: 402
+    title: Payment required
+    detail: Billing denied inference (insufficient prepaid balance)
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+  - status: 403
+    title: Forbidden
+    detail: Valid key but resource belongs to another user
+    source_operation: openapi/overshootai-openapi.yaml#getStream
+  - status: 404
+    title: Not found
+    detail: Stream missing, deleted, lease expired, or no matched frames
+    source_operation: openapi/overshootai-openapi.yaml#getStream
+  - status: 409
+    title: Conflict / wrong region
+    detail: Request reached the wrong region, or the requested frame index has not yet arrived
+    schema: RegionError
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+  - status: 410
+    title: Gone
+    detail: Requested exact lifetime frame index has been evicted from the retention window
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+  - status: 422
+    title: Unprocessable entity
+    detail: Request validation failed
+    schema: ValidationError
+    source_operation: openapi/overshootai-openapi.yaml#createCheckout
+  - status: 429
+    title: Too many requests
+    detail: Per-user inference rate limit exceeded, or the model provider rate-limited the request
+    remediation: Honor retry-after and x-ratelimit-remaining headers
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+  - status: 500
+    title: Internal error
+    detail: Internal processing error
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+  - status: 502
+    title: Bad gateway
+    detail: Model provider request failed
+    schema: UpstreamError
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+  - status: 503
+    title: Service unavailable
+    detail: Service unavailable / no capacity to create stream
+    source_operation: openapi/overshootai-openapi.yaml#createStream
+  - status: 504
+    title: Gateway timeout
+    detail: Model provider timeout
+    schema: UpstreamError
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+error_codes:
+  - {code: stream_not_found, type: stream_error}
+  - {code: stream_unauthorized, type: stream_error}
+  - {code: segment_empty, type: validation_error}
+  - {code: frame_evicted, type: stream_error}
+  - {code: frame_not_yet_produced, type: stream_error}
+  - {code: model_unavailable, type: provider_error}
+  - {code: model_video_unsupported, type: validation_error}
+  - {code: provider_safety_block, type: provider_error}
+  - {code: billing_denied, type: billing_error}

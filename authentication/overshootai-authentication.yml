@@ -1,0 +1,14 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/overshootai-inference-openapi-original.json, openapi/overshootai-openapi.yaml
+summary:
+  types:
+  - http
+schemes:
+- name: API Key
+  type: http
+  scheme: bearer
+  description: Bearer <api_key>
+  sources:
+  - openapi/overshootai-inference-openapi-original.json
+  - openapi/overshootai-openapi.yaml

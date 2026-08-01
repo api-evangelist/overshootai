@@ -1,0 +1,38 @@
+generated: '2026-07-20'
+method: searched
+source: https://github.com/overshoot-ai
+packages:
+  - language: javascript
+    registry: npm
+    name: overshoot
+    url: https://www.npmjs.com/package/overshoot
+    install: npm install overshoot
+    version: 2.0.0-alpha.8
+    repository: https://github.com/Overshoot-ai/overshoot-js-sdk
+    official: true
+    note: >-
+      First-party TypeScript/JavaScript SDK. Real-time vision AI SDK with
+      sub-second latency over any live video source (camera, screen share, LiveKit).
+  - language: python
+    registry: pypi
+    name: overshoot
+    url: https://pypi.org/project/overshoot/
+    install: pip install overshoot
+    repository: https://github.com/overshoot-ai/overshoot-python
+    official: true
+    status: reserved
+    note: >-
+      PyPI name is reserved by Overshoot ("Reserved for Overshoot"); the Python SDK
+      source is published at github.com/overshoot-ai/overshoot-python (MIT, async,
+      livekit + aiohttp). No wheel published on PyPI yet at capture time.
+source_repositories:
+  - name: overshoot-python
+    url: https://github.com/overshoot-ai/overshoot-python
+    language: python
+    official: true
+  - name: livekit-vision-agent
+    url: https://github.com/overshoot-ai/livekit-vision-agent
+    language: python
+    official: true
+    kind: example
+    note: Real-time vision agent example combining LiveKit + Overshoot VLM inference.

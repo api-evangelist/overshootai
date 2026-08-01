@@ -1,0 +1,53 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/overshootai-openapi.yaml
+note: >-
+  Entity graph derived from the OpenAPI schemas and path parameters. Overshoot's
+  core object is the Stream (a leased live video session), queried by ChatCompletion
+  requests that reference its frames via ovs:// URLs. Billing entities (Pricing,
+  Balance, Checkout) attach to the account. IDs are opaque; no id-prefix scheme is
+  documented.
+entities:
+  - name: Stream
+    id_field: stream_id
+    schemas: [CreateStreamResponse, StreamStatusResponse, KeepaliveResponse, DeleteStreamResponse, PublishInfo]
+    operations: [createStream, getStream, keepaliveStream, deleteStream]
+    description: A leased live video session holding frames addressable via ovs:// URLs; retention 600s, lease renewed via keepalive.
+  - name: ChatCompletion
+    schemas: [ChatCompletionRequest, ChatCompletionResponse, ChatCompletionStreamChunk, ChatCompletionChoice, ChatCompletionUsage, ChatMessage, ContentPart, OvershootMetadata]
+    operations: [chatCompletions]
+    description: An OpenAI-compatible inference request that queries a Stream's frames with a chosen model.
+  - name: Model
+    id_field: id
+    schemas: [ModelInfo, ModelsResponse]
+    operations: [listModels]
+    description: A vision-language model available for inference (Overshoot-hosted, Anthropic, Google, or OpenAI).
+  - name: Pricing
+    schemas: [Pricing]
+    operations: [listPricing, getPricing]
+    description: Per-model per-token prices in integer microcents.
+  - name: Balance
+    schemas: [BalanceResponse]
+    operations: [getBalance]
+    description: The authenticated account's prepaid credit balance.
+  - name: Checkout
+    schemas: [CheckoutRequest, CheckoutResponse]
+    operations: [createCheckout]
+    description: A checkout session to purchase prepaid credits (amount_cents >= 100).
+relationships:
+  - from: ChatCompletion
+    to: Stream
+    kind: belongs_to
+    via: ovs:// media URL referencing stream_id
+  - from: ChatCompletion
+    to: Model
+    kind: belongs_to
+    via: model
+  - from: Pricing
+    to: Model
+    kind: belongs_to
+    via: model
+  - from: Balance
+    to: Checkout
+    kind: has_many
+    via: account

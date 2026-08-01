@@ -1,0 +1,33 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/overshootai-openapi.yaml
+note: >-
+  Standards conformance derived from the published OpenAPI plus the docs. Overshoot
+  is an OpenAI-compatible inference API using HTTP bearer API-key auth; it does not
+  use OAuth2/OIDC, does not emit RFC 9457 problem+json, and publishes no compliance
+  certifications, so no Compliance pointer is emitted.
+standards:
+  - id: openapi-3.0
+    conforms: true
+    evidence: openapi 3.0.3 document published at docs.overshoot.ai/api-reference/openapi.yaml
+  - id: openai-chat-completions
+    conforms: true
+    evidence: POST /chat/completions is an OpenAI-compatible request/response shape; models listed in OpenAI list shape
+  - id: http-bearer-auth
+    conforms: true
+    evidence: components.securitySchemes.bearerAuth type http scheme bearer (ovs_ API key)
+  - id: sse-streaming
+    conforms: true
+    evidence: chat completions support streamed chunks (ChatCompletionStreamChunk schema)
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: errors use custom {detail} / {detail.error{message,type,code}} envelopes, not application/problem+json
+  - id: oauth2
+    conforms: false
+  - id: openid-connect
+    conforms: false
+  - id: json-api
+    conforms: false
+  - id: webhooks
+    conforms: false
+    evidence: no webhook or AsyncAPI surface; event delivery is via LiveKit WebRTC media transport

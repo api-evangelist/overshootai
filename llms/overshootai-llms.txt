@@ -1,0 +1,37 @@
+# Overshoot
+
+> Overshoot is a real-time video understanding API: ingest live frames over WebRTC and query them with vision-language models through an OpenAI-compatible interface.
+
+## Docs
+
+- [Authentication](https://docs.overshoot.ai/api-reference/authentication.md): Bearer API keys for every public HTTP request, except the open model and pricing endpoints.
+- [Chat completions](https://docs.overshoot.ai/api-reference/chat-completions.md): OpenAI-compatible chat completions.
+- [Core flow](https://docs.overshoot.ai/api-reference/core-flow.md): The end-to-end lifecycle: create a stream, publish frames, query frames with chat completions.
+- [Create checkout session](https://docs.overshoot.ai/api-reference/create-checkout.md): Create a checkout session for buying prepaid credits. `amount_cents` must be at least `100`.
+- [Create stream](https://docs.overshoot.ai/api-reference/create-stream.md): Create a new video inference stream. Returns connection details for the chosen transport.
+- [Delete stream](https://docs.overshoot.ai/api-reference/delete-stream.md): End a stream and release its resources. Idempotent on already-deleted streams within the lookup window.
+- [Error shapes](https://docs.overshoot.ai/api-reference/errors.md): Status codes, error codes, and the JSON envelopes used across stream and chat endpoints.
+- [Get prepaid balance](https://docs.overshoot.ai/api-reference/get-balance.md): Return the authenticated user's prepaid balance. `balance_cents` is for display; `balance_microcents` is the exact billing unit. Inference can return `402` when billing denies a request.
+- [Get model pricing](https://docs.overshoot.ai/api-reference/get-pricing.md): Return pricing for one model. The `model` path may contain slashes.
+- [Get stream](https://docs.overshoot.ai/api-reference/get-stream.md)
+- [Introduction](https://docs.overshoot.ai/api-reference/introduction.md): Use the Overshoot REST API to ingest live video, query vision-language models, and manage stream lifecycle.
+- [Renew stream lease](https://docs.overshoot.ai/api-reference/keepalive-stream.md): Renew the stream lease and pay for elapsed streaming time. **Call every 10-20 seconds.** Streams expire after ~45 seconds without a keepalive.
+- [Limits and retention](https://docs.overshoot.ai/api-reference/limits.md): Frame retention window and other API limits.
+- [List models](https://docs.overshoot.ai/api-reference/list-models.md): List model IDs and availability in an OpenAI-compatible shape. No auth required. Use the `id` value as the `model` field in inference requests.
+- [List pricing](https://docs.overshoot.ai/api-reference/list-pricing.md): List public model prices. No auth required. Money fields use **integer microcents**: `1 cent = 1,000,000 microcents`.
+- [LiveKit client flow](https://docs.overshoot.ai/api-reference/livekit-client-flow.md): Browser example showing how to create a stream, publish via LiveKit, and renew the lease.
+- [Prompt cache and threads](https://docs.overshoot.ai/api-reference/prompt-cache.md): Reuse cached prompt prefixes across related chat completion requests.
+- [Region behavior](https://docs.overshoot.ai/api-reference/regions.md): How regional routing works and how to skip the redirect/retry step.
+- [Stream lifecycle](https://docs.overshoot.ai/api-reference/stream-lifecycle.md): How streams transition between active and ended, and how frame availability is exposed.
+- [Stream media URLs](https://docs.overshoot.ai/api-reference/stream-media-urls.md): The ovs:// URL grammar for referencing frames and segments inside chat completions.
+- [Best practices](https://docs.overshoot.ai/best-practices.md): Patterns for keeping latency low, costs predictable, and streams alive.
+- [Chat Completion](https://docs.overshoot.ai/chat-completion.md): Use an OpenAI-compatible request to interact with your stream. Reference any moment by URL: a single frame, a window, or several windows.
+- [Glossary](https://docs.overshoot.ai/glossary.md): Canonical definitions for Overshoot terms used across the docs and API.
+- [Welcome to Overshoot](https://docs.overshoot.ai/intro.md)
+- [Models](https://docs.overshoot.ai/models.md): Vision Language Models on Overshoot
+- [Quickstart](https://docs.overshoot.ai/quickstart.md): Get started in four quick steps
+- [The Stream](https://docs.overshoot.ai/the-stream.md): A leased session that holds your live video feed and makes it addressable from any chat completion.
+
+## OpenAPI Specs
+
+- [openapi](https://docs.overshoot.ai/api-reference/openapi.yaml)

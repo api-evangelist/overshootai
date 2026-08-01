@@ -1,0 +1,1314 @@
+openapi: 3.0.3
+info:
+  title: Overshoot API
+  version: 1.0.0-beta
+  description: >
+    Real-time video understanding API. Create a live video stream, push frames
+    over
+
+    WebRTC (LiveKit), then ask a vision-language model questions about what's
+    happening
+
+    using an OpenAI-compatible chat completions endpoint.
+
+
+    Billing endpoints are mounted on the same host under `/billing`.
+servers:
+  - url: https://api.overshoot.ai/v1beta
+security:
+  - bearerAuth: []
+tags:
+  - name: Streams
+    description: Create, inspect, keep alive, and delete live video streams.
+  - name: Models
+    description: List available vision-language models.
+  - name: Chat
+    description: Ask models questions about a stream's frames.
+  - name: Billing
+    description: Pricing, prepaid balance, and checkout.
+paths:
+  /streams:
+    post:
+      tags:
+        - Streams
+      operationId: createStream
+      summary: Create stream
+      description: >
+        Creates a live stream and returns a publish token. The current request
+        body is
+
+        empty. The retained frame history is fixed at 600 seconds.
+
+
+        The publish token is scoped to this stream and grants media publish
+        permissions.
+
+        Renew it through [`/keepalive`](#tag/Streams/operation/keepaliveStream)
+        before it
+
+        expires.
+      parameters:
+        - $ref: '#/components/parameters/RegionHeader'
+      responses:
+        '201':
+          description: Stream created.
+          headers:
+            X-Overshoot-Region:
+              $ref: '#/components/headers/RegionResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateStreamResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: API key has no associated user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Wrong region.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionError'
+        '503':
+          description: Stream creation temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /streams/{stream_id}:
+    parameters:
+      - $ref: '#/components/parameters/StreamId'
+      - $ref: '#/components/parameters/RegionHeader'
+    get:
+      tags:
+        - Streams
+      operationId: getStream
+      summary: Get stream
+      description: >
+        Returns current stream status and frame telemetry.
+
+
+        `stream_time_ms` is zero until the first frame arrives. After that, it
+        is measured
+
+        from the first captured frame. When a stream ends, live counters and
+        timestamps
+
+        are snapshotted — `GET /streams/{id}` on an ended stream returns those
+        final
+
+        values; fields may be `null` if the stream ended before the value
+        existed.
+      responses:
+        '200':
+          description: Stream state.
+          headers:
+            X-Overshoot-Region:
+              $ref: '#/components/headers/RegionResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StreamStatusResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Stream unknown, expired, deleted, or owned by a different user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Wrong region.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionError'
+    delete:
+      tags:
+        - Streams
+      operationId: deleteStream
+      summary: Delete stream
+      description: Request stream deletion.
+      responses:
+        '200':
+          description: Delete acknowledged.
+          headers:
+            X-Overshoot-Region:
+              $ref: '#/components/headers/RegionResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteStreamResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Stream unknown, expired, deleted, or owned by a different user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Wrong region.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionError'
+  /streams/{stream_id}/keepalive:
+    parameters:
+      - $ref: '#/components/parameters/StreamId'
+      - $ref: '#/components/parameters/RegionHeader'
+    post:
+      tags:
+        - Streams
+      operationId: keepaliveStream
+      summary: Renew stream lease
+      description: >
+        Renews the stream lease and returns a fresh publish token. Clients
+        should renew
+
+        before the 5-minute lease expires, for example every 4 minutes, and pass
+        the
+
+        returned token to the LiveKit SDK with `room.updateToken(...)`.
+      responses:
+        '200':
+          description: Lease renewed.
+          headers:
+            X-Overshoot-Region:
+              $ref: '#/components/headers/RegionResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeepaliveResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Stream unknown, expired, deleted, or owned by a different user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Wrong region.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionError'
+  /models:
+    get:
+      tags:
+        - Models
+      operationId: listModels
+      summary: List models
+      description: >
+        List model IDs and availability in an OpenAI-compatible shape. No auth
+        required.
+
+        Use the `id` value as the `model` field in inference requests.
+      security: []
+      responses:
+        '200':
+          description: List of models.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelsResponse'
+  /chat/completions:
+    post:
+      tags:
+        - Chat
+      operationId: chatCompletions
+      summary: Chat completions
+      description: >
+        OpenAI-compatible chat completions.
+
+
+        Text-only requests are allowed. To reference live stream media, put
+
+        `ovs://streams/<id>?...` inside an `image_url` or `video_url` content
+        part. Unknown
+
+        fields are accepted for SDK compatibility.
+
+
+        Set `stream: true` to receive `text/event-stream`. When
+
+        `stream_options.include_usage` is also `true`, the stream may include a
+        final
+
+        usage chunk.
+      parameters:
+        - $ref: '#/components/parameters/RegionHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+            examples:
+              text_only:
+                summary: Plain text completion
+                value:
+                  model: google/gemma-4-26B-A4B-it
+                  messages:
+                    - role: user
+                      content: 'Reply with exactly: ok'
+                  max_completion_tokens: 8
+              stream_video_qa:
+                summary: Ask about the last 5 seconds of a stream
+                value:
+                  model: google/gemma-4-26B-A4B-it
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: What does it say on my shirt?
+                        - type: video_url
+                          video_url:
+                            url: >-
+                              ovs://streams/cc3e3f79-c5c4-4d1c-985e-028b42030569?start_offset_ms=-5000
+              streaming:
+                summary: Server-sent events with usage chunk
+                value:
+                  model: google/gemma-4-26B-A4B-it
+                  messages:
+                    - role: user
+                      content: 'Reply with exactly: ok'
+                  stream: true
+                  stream_options:
+                    include_usage: true
+      responses:
+        '200':
+          description: >
+            Completion response. JSON by default; if the request sets `stream:
+            true`,
+
+            the response is an OpenAI-style SSE stream (`text/event-stream`)
+            terminated by
+
+            `data: [DONE]`.
+          headers:
+            X-Overshoot-Region:
+              $ref: '#/components/headers/RegionResponseHeader'
+            x-ratelimit-limit:
+              $ref: '#/components/headers/RateLimitLimit'
+            x-ratelimit-remaining:
+              $ref: '#/components/headers/RateLimitRemaining'
+            x-ratelimit-reset:
+              $ref: '#/components/headers/RateLimitReset'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionStreamChunk'
+        '400':
+          description: >-
+            Invalid stream URL/query, invalid segment, unsupported model/media
+            combination, or provider safety block.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '401':
+          description: Missing or invalid bearer API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '402':
+          description: Billing denied inference.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '403':
+          description: Valid key, but the requested resource belongs to another user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '404':
+          description: >-
+            Stream missing, stream deleted, lease expired, no retained frames
+            matched, or pricing/model resource not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '409':
+          description: >-
+            Wrong region, multiple stream regions, or requested lifetime frame
+            index has not arrived yet.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '410':
+          description: Requested exact lifetime frame index has been evicted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '422':
+          description: Request validation failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '429':
+          description: >-
+            Per-user inference rate limit exceeded, or the model provider
+            rate-limited the request.
+          headers:
+            x-ratelimit-limit:
+              $ref: '#/components/headers/RateLimitLimit'
+            x-ratelimit-remaining:
+              $ref: '#/components/headers/RateLimitRemaining'
+            x-ratelimit-reset:
+              $ref: '#/components/headers/RateLimitReset'
+            retry-after:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '500':
+          description: Internal processing error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '502':
+          description: >-
+            Model provider request failed, unauthorized, or returned a server
+            error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+        '503':
+          description: Service temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '504':
+          description: Model provider request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatError'
+  /billing/pricing:
+    get:
+      tags:
+        - Billing
+      operationId: listPricing
+      summary: List pricing
+      description: >
+        List public model prices. No auth required. Money fields use **integer
+        microcents**:
+
+        `1 cent = 1,000,000 microcents`.
+      security: []
+      servers:
+        - url: https://api.overshoot.ai
+      responses:
+        '200':
+          description: List of public prices.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pricing'
+  /billing/pricing/{model}:
+    get:
+      tags:
+        - Billing
+      operationId: getPricing
+      summary: Get model pricing
+      description: Return pricing for one model. The `model` path may contain slashes.
+      security: []
+      servers:
+        - url: https://api.overshoot.ai
+      parameters:
+        - name: model
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Model identifier (may contain `/`).
+      responses:
+        '200':
+          description: Pricing for the requested model.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pricing'
+        '404':
+          description: Price not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /billing/accounts/me/balance:
+    get:
+      tags:
+        - Billing
+      operationId: getBalance
+      summary: Get prepaid balance
+      description: >
+        Return the authenticated user's prepaid balance. `balance_cents` is for
+        display;
+
+        `balance_microcents` is the exact billing unit. Inference can return
+        `402` when
+
+        billing denies a request.
+      servers:
+        - url: https://api.overshoot.ai
+      responses:
+        '200':
+          description: Current balance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /billing/checkout:
+    post:
+      tags:
+        - Billing
+      operationId: createCheckout
+      summary: Create checkout session
+      description: >
+        Create a checkout session for buying prepaid credits. `amount_cents`
+        must be at
+
+        least `100`.
+      servers:
+        - url: https://api.overshoot.ai
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+      responses:
+        '200':
+          description: Checkout URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key (e.g. `ovs_...`)
+      description: >
+        Every public HTTP request requires `Authorization: Bearer <api_key>`,
+        except
+
+        `GET /models` and the public `/billing/pricing` endpoints.
+
+
+        - `401` means the key is missing, unknown, or revoked.
+
+        - `403` means the key is valid but cannot access the requested resource.
+
+        - The publish token returned by `POST /streams` is only for publishing
+        media to
+          LiveKit. It does not replace the API key for HTTP calls.
+  parameters:
+    StreamId:
+      name: stream_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: UUID returned by `POST /streams`.
+    RegionHeader:
+      name: X-Overshoot-Region
+      in: header
+      required: false
+      schema:
+        type: string
+        enum:
+          - us-west1
+          - us-central1
+      description: >
+        Optional hint to route the request to the region that owns the stream.
+        If the
+
+        request reaches the wrong region the API returns `409` with a
+        `region_error` body.
+  headers:
+    RegionResponseHeader:
+      description: The region that served this request.
+      schema:
+        type: string
+        enum:
+          - us-west1
+          - us-central1
+    RateLimitLimit:
+      description: Current per-user request-per-second limit.
+      schema:
+        type: integer
+    RateLimitRemaining:
+      description: Remaining requests in the current second.
+      schema:
+        type: integer
+    RateLimitReset:
+      description: Epoch time when the current second window resets.
+      schema:
+        type: integer
+    RetryAfter:
+      description: Seconds to wait before retrying. Present on 429; currently `1`.
+      schema:
+        type: integer
+  schemas:
+    Error:
+      type: object
+      description: Standard error body used by stream-lifecycle and billing endpoints.
+      properties:
+        detail:
+          type: string
+      required:
+        - detail
+    ValidationError:
+      type: object
+      description: Validation failure shape used by chat completions and billing.
+      properties:
+        error:
+          type: string
+          example: validation_error
+        message:
+          type: string
+          example: Request validation failed
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              loc:
+                type: array
+                items:
+                  type: string
+              msg:
+                type: string
+              type:
+                type: string
+    RegionError:
+      type: object
+      description: Returned on `409` when the request reaches the wrong region.
+      properties:
+        detail:
+          type: object
+          properties:
+            error:
+              type: string
+              example: region_error
+            expected_region:
+              type: string
+              example: us-west1
+            requested_region:
+              type: string
+              nullable: true
+              example: us-central1
+    ChatError:
+      type: object
+      description: >
+        Error envelope used by `/chat/completions`. The inner `error.code`
+        identifies the
+
+        specific failure (see the Errors guide for the full list of codes such
+        as
+
+        `stream_not_found`, `frame_evicted`, `upstream_http_<status>`, etc.).
+      properties:
+        detail:
+          type: object
+          properties:
+            error:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Stream not found: <stream_id>'
+                type:
+                  type: string
+                  enum:
+                    - stream_error
+                    - validation_error
+                    - provider_error
+                    - upstream_error
+                    - billing_error
+                    - rate_limit_error
+                    - internal_error
+                  example: stream_error
+                code:
+                  type: string
+                  description: >
+                    Specific failure code. Known values include:
+
+                    `stream_url_invalid`, `query_param_invalid`,
+                    `stream_not_found`,
+
+                    `stream_unauthorized`, `segment_empty`, `segment_invalid`,
+
+                    `frame_evicted`, `frame_not_yet_produced`,
+                    `model_unavailable`,
+
+                    `model_video_unsupported`, `provider_safety_block`,
+                    `billing_denied`,
+
+                    `upstream_http_<status>`, `upstream_timeout`,
+
+                    `upstream_request_failed`.
+                  example: stream_not_found
+                upstream:
+                  $ref: '#/components/schemas/UpstreamError'
+              required:
+                - message
+                - type
+                - code
+          required:
+            - error
+    UpstreamError:
+      type: object
+      nullable: true
+      description: >-
+        Present on `upstream_*` codes. Preserves the provider status and a
+        bounded response body when available.
+      properties:
+        provider:
+          type: string
+          example: google
+        status:
+          type: integer
+          example: 400
+        body:
+          type: object
+          additionalProperties: true
+          description: Bounded provider response body.
+        rate_limits:
+          type: object
+          nullable: true
+          additionalProperties: true
+    PublishInfo:
+      type: object
+      description: WebRTC publish target. Connect with the LiveKit client SDK.
+      properties:
+        type:
+          type: string
+          enum:
+            - livekit
+          default: livekit
+        url:
+          type: string
+          description: LiveKit room URL (`wss://...`).
+        token:
+          type: string
+          description: Short-lived publish JWT for the LiveKit client.
+      required:
+        - type
+        - url
+        - token
+    CreateStreamResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique stream identifier. Use this in every subsequent stream URL.
+        state:
+          type: string
+          enum:
+            - active
+          description: Always `active` for a freshly created stream.
+        publish:
+          $ref: '#/components/schemas/PublishInfo'
+        expires_at_ms:
+          type: integer
+          description: >-
+            Wall-clock Unix ms when the lease will expire if not renewed via
+            `/keepalive`.
+        ttl_seconds:
+          type: integer
+          example: 300
+          description: Lease TTL in seconds. Currently `300` for all streams.
+      required:
+        - id
+        - state
+        - publish
+        - expires_at_ms
+        - ttl_seconds
+    StreamStatusResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        state:
+          type: string
+          enum:
+            - active
+            - ended
+          description: >
+            Lifecycle state. `active` while the stream accepts publishers and
+            inference.
+
+            `ended` once it has expired or been deleted — this transition is
+            terminal.
+        stream_time_ms:
+          type: number
+          nullable: true
+          description: >-
+            Stream-clock position in ms. Zero until the first frame arrives,
+            then monotonically increasing from that first frame.
+        first_frame_at_ms:
+          type: integer
+          nullable: true
+          description: Wall-clock Unix ms of the first frame ever ingested.
+        last_frame_at_ms:
+          type: integer
+          nullable: true
+          description: Wall-clock Unix ms of the most recent frame.
+        last_frame_index:
+          type: integer
+          nullable: true
+          description: >-
+            Lifetime index of the most recent frame. `frame_index=-1` resolves
+            against this at request time.
+        first_available_frame_at_ms:
+          type: integer
+          nullable: true
+          description: Wall-clock Unix ms of the oldest retained frame.
+        first_available_frame_index:
+          type: integer
+          nullable: true
+          description: Lifetime index of the oldest frame still retained.
+        created_at_ms:
+          type: integer
+          nullable: true
+          description: Wall-clock Unix ms of stream creation.
+        recent_fps:
+          type: number
+          nullable: true
+          description: >-
+            Rolling FPS over the current frame-metrics bucket for active
+            streams.
+        retained_frame_count:
+          type: integer
+          nullable: true
+        evicted_frame_count:
+          type: integer
+          nullable: true
+        expires_at_ms:
+          type: integer
+          nullable: true
+          description: >-
+            Wall-clock Unix ms when the lease will expire. `null` on ended
+            streams.
+        ttl_seconds:
+          type: integer
+          nullable: true
+        ended_at_ms:
+          type: integer
+          nullable: true
+          description: Wall-clock Unix ms when the stream entered the `ended` state.
+        end_reason:
+          type: string
+          nullable: true
+          enum:
+            - expired
+            - deleted
+          description: >
+            Why the stream ended. `expired` = system-driven termination,
+            `deleted` =
+
+            explicit `DELETE`. `null` while `state == active`.
+        audio:
+          type: boolean
+          default: false
+          description: Reserved for future audio support. Always `false` today.
+      required:
+        - id
+        - state
+    KeepaliveResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        expires_at_ms:
+          type: integer
+        ttl_seconds:
+          type: integer
+          example: 300
+        stream_time_ms:
+          type: number
+          description: Current stream-clock position in ms.
+        publish:
+          $ref: '#/components/schemas/PublishInfo'
+      required:
+        - id
+        - expires_at_ms
+        - ttl_seconds
+        - publish
+    DeleteStreamResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        deleted:
+          type: boolean
+          example: true
+      required:
+        - id
+        - deleted
+    ModelInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: google/gemma-4-26B-A4B-it
+          description: >-
+            Model identifier. Pass this verbatim as the `model` field on
+            `/chat/completions`.
+        object:
+          type: string
+          default: model
+        created:
+          type: integer
+          description: Unix seconds when the model entry was registered.
+        owned_by:
+          type: string
+          example: overshoot
+        status:
+          type: string
+          enum:
+            - ready
+            - unavailable
+          description: >-
+            `ready` = currently serving. `unavailable` = not currently
+            available.
+      required:
+        - id
+        - object
+        - created
+        - owned_by
+        - status
+    ModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          default: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelInfo'
+      required:
+        - object
+        - data
+    ChatCompletionRequest:
+      type: object
+      description: >
+        OpenAI-compatible. Permissive — unknown fields are accepted for SDK
+        compatibility.
+
+        To reference a stream's frames, include `video_url` or `image_url`
+        content parts
+
+        whose URL uses the `ovs://streams/{stream_id}?...` reference scheme.
+      additionalProperties: true
+      properties:
+        model:
+          type: string
+          description: >-
+            Model identifier from `GET /models`. Must be `ready` at request
+            time.
+          example: google/gemma-4-26B-A4B-it
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        max_completion_tokens:
+          type: integer
+          nullable: true
+          description: Optional output-token cap. OpenAI's preferred name.
+        max_tokens:
+          type: integer
+          nullable: true
+          description: Legacy alias for `max_completion_tokens`.
+        response_format:
+          type: object
+          additionalProperties: true
+          description: Used when supported by the selected model/provider.
+        stream:
+          type: boolean
+          default: false
+          description: When `true`, the response is a server-sent event stream.
+        stream_options:
+          type: object
+          description: 'Only meaningful when `stream: true`.'
+          properties:
+            include_usage:
+              type: boolean
+              description: When `true`, the stream may include a final usage chunk.
+        tools:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: OpenAI-style tool definitions.
+        tool_choice:
+          oneOf:
+            - type: string
+            - type: object
+              additionalProperties: true
+          description: OpenAI-style tool choice.
+        parallel_tool_calls:
+          type: boolean
+          description: OpenAI-style parallel tool-call setting.
+        thread_id:
+          type: string
+          nullable: true
+          description: >
+            Optional key for prompt-cache reuse across related requests in the
+            same user
+
+            conversation and model. See the Prompt cache guide.
+      required:
+        - model
+        - messages
+    ChatMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum:
+            - system
+            - user
+            - assistant
+            - tool
+        content:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                $ref: '#/components/schemas/ContentPart'
+      required:
+        - role
+        - content
+    ContentPart:
+      oneOf:
+        - $ref: '#/components/schemas/TextPart'
+        - $ref: '#/components/schemas/ImageUrlPart'
+        - $ref: '#/components/schemas/VideoUrlPart'
+    TextPart:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - text
+        text:
+          type: string
+      required:
+        - type
+        - text
+    ImageUrlPart:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - image_url
+        image_url:
+          type: object
+          properties:
+            url:
+              type: string
+              description: >
+                Either an HTTPS image URL, a `data:` URL, or an Overshoot stream
+                frame
+
+                reference like `ovs://streams/{stream_id}?frame_index=-1`. The
+                `ovs://`
+
+                URI is a reference identifier the server parses, not a fetchable
+                URL.
+
+                Required query: exactly one of `frame_index`, `timestamp_ms`, or
+
+                `offset_ms`.
+          required:
+            - url
+      required:
+        - type
+        - image_url
+    VideoUrlPart:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - video_url
+        video_url:
+          type: object
+          properties:
+            url:
+              type: string
+              description: >
+                HTTPS video URL, `data:` URL, or Overshoot stream segment
+                reference like
+
+                `ovs://streams/{stream_id}?start_offset_ms=-5000`. Required
+                query:
+
+                exactly one `start_*` anchor. Optional end anchor (defaults to
+                live edge),
+
+                optional `max_fps` (default `1.0`).
+          required:
+            - url
+      required:
+        - type
+        - video_url
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          default: chat.completion
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatCompletionChoice'
+        usage:
+          $ref: '#/components/schemas/ChatCompletionUsage'
+        overshoot:
+          $ref: '#/components/schemas/OvershootMetadata'
+      required:
+        - id
+        - object
+        - created
+        - model
+        - choices
+    ChatCompletionStreamChunk:
+      type: object
+      description: >
+        A single `data:` payload in an SSE response. The stream is terminated by
+
+        `data: [DONE]`. The final chunk (when `stream_options.include_usage:
+        true`)
+
+        carries `usage` and `overshoot.cache`.
+      properties:
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              delta:
+                type: object
+                properties:
+                  role:
+                    type: string
+                  content:
+                    type: string
+                  tool_calls:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+              finish_reason:
+                type: string
+                nullable: true
+        usage:
+          allOf:
+            - $ref: '#/components/schemas/ChatCompletionUsage'
+          nullable: true
+        overshoot:
+          $ref: '#/components/schemas/OvershootMetadata'
+    ChatCompletionChoice:
+      type: object
+      properties:
+        index:
+          type: integer
+        message:
+          type: object
+          properties:
+            role:
+              type: string
+              example: assistant
+            content:
+              type: string
+              nullable: true
+            tool_calls:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+              description: OpenAI-style tool calls. Present when the model emits any.
+          required:
+            - role
+        finish_reason:
+          type: string
+          nullable: true
+          enum:
+            - stop
+            - length
+            - tool_calls
+            - content_filter
+      required:
+        - index
+        - message
+    ChatCompletionUsage:
+      type: object
+      properties:
+        prompt_tokens:
+          type: integer
+          description: >-
+            Tokens in the request — text plus visual tokens from any frames or
+            segments.
+        completion_tokens:
+          type: integer
+        total_tokens:
+          type: integer
+    OvershootMetadata:
+      type: object
+      description: Overshoot-specific response metadata. Observability only.
+      properties:
+        cache:
+          type: object
+          properties:
+            thread_id:
+              type: string
+              nullable: true
+              description: The `thread_id` you supplied, or `null`.
+            cache_hit:
+              type: boolean
+              description: '`true` when cached prompt tokens were reported.'
+            cached_input_tokens:
+              type: integer
+              description: Prompt tokens served from prefix cache.
+    Pricing:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        model:
+          type: string
+          example: google/gemma-4-26B-A4B-it
+        provider:
+          type: string
+          example: google
+        version:
+          type: string
+          example: '2026-06-01'
+        input_microcents_per_token:
+          type: integer
+          example: 10
+        output_microcents_per_token:
+          type: integer
+          example: 40
+        cached_input_microcents_per_token:
+          type: integer
+          example: 2
+        public:
+          type: boolean
+          example: true
+      required:
+        - id
+        - model
+        - provider
+        - version
+        - input_microcents_per_token
+        - output_microcents_per_token
+        - public
+    BalanceResponse:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        balance_microcents:
+          type: integer
+          description: Exact billing unit. `1 cent = 1,000,000 microcents`.
+        balance_cents:
+          type: integer
+          description: Display value.
+      required:
+        - user_id
+        - balance_microcents
+        - balance_cents
+    CheckoutRequest:
+      type: object
+      properties:
+        amount_cents:
+          type: integer
+          minimum: 100
+          description: Amount to charge, in cents. Must be at least `100`.
+      required:
+        - amount_cents
+    CheckoutResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Hosted checkout URL.
+      required:
+        - url

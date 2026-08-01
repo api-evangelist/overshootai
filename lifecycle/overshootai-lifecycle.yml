@@ -1,0 +1,28 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.overshoot.ai/api-reference/introduction
+note: >-
+  Versioning is via URI path (/v1beta) and the API self-describes as beta
+  (info.version 1.0.0-beta). No dated changelog, no deprecation policy / RFC 8594
+  Sunset headers, no published SLA, and no status page (status.overshoot.ai does
+  not resolve) were found at capture time — so no StatusPage or Deprecation
+  pointers are emitted. Stream leases have a short lifecycle instead of API-level
+  deprecation.
+versioning:
+  scheme: uri-path
+  current: v1beta
+  maturity: beta
+  docs: https://docs.overshoot.ai/api-reference/introduction
+deprecation:
+  policy_url: null
+  sunset_header: false
+sla:
+  url: null
+  uptime_target: null
+status_page: null
+stream_lifecycle:
+  frame_retention_seconds: 600
+  keepalive_interval_seconds: "10-20"
+  lease_expiry_seconds: ~45
+  docs: https://docs.overshoot.ai/api-reference/stream-lifecycle
+deprecated_operations: []

@@ -1,0 +1,16 @@
+generated: '2026-07-20'
+method: generated
+source: openapi/overshootai-openapi.yaml
+note: >-
+  Packaged agent skills generated from the Overshoot OpenAPI. Every step is grounded
+  in a real operationId verified against the spec. No provider-published Agent Skills
+  / AGENTS.md were found.
+skills:
+  - file: overshootai-analyze-live-stream.md
+    name: Analyze a live video stream with Overshoot
+    api: openapi/overshootai-openapi.yaml
+    operations: [createStream, keepaliveStream, chatCompletions, getStream, deleteStream]
+  - file: overshootai-manage-credits.md
+    name: Check balance and buy Overshoot credits
+    api: openapi/overshootai-openapi.yaml
+    operations: [listPricing, getPricing, getBalance, createCheckout, listModels]

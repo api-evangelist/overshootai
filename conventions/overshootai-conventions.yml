@@ -1,0 +1,50 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.overshoot.ai/api-reference/introduction
+note: >-
+  Cross-cutting request/response semantics for the Overshoot API, from the docs and
+  the OpenAPI. No Idempotency pointer is emitted: DELETE /streams is documented as
+  idempotent on already-deleted streams within the lookup window, but there is no
+  idempotency-key mechanism for safely retrying POST creates or checkout, so the
+  provider does not offer a general write-idempotency contract.
+authentication:
+  style: http-bearer
+  header: 'Authorization: Bearer ovs_...'
+  key_source: https://platform.overshoot.ai/api-keys
+  unauthenticated_endpoints: ['GET /models', 'GET /billing/pricing', 'GET /billing/pricing/{model}']
+  ref: authentication/overshootai-authentication.yml
+idempotency:
+  key_header: null
+  supported: partial
+  detail: DELETE /streams/{id} is idempotent on already-deleted streams within the lookup window; no Idempotency-Key header for POST operations.
+pagination:
+  style: none
+  detail: List endpoints (models, pricing) return full arrays; no cursor/offset pagination.
+media_addressing:
+  scheme: 'ovs://'
+  detail: Chat completions reference frames/segments/windows of a stream via ovs:// URLs (single frame, a window, or several windows).
+  ref: https://docs.overshoot.ai/api-reference/stream-media-urls
+regions:
+  behavior: Requests must reach the stream's home region; a 409 RegionError returns expected_region/requested_region for redirect+retry.
+  ref: https://docs.overshoot.ai/api-reference/regions
+prompt_cache:
+  supported: true
+  detail: Cached prompt prefixes can be reused across related chat completion requests (threads); cached input tokens are billed at a lower microcents rate.
+  ref: https://docs.overshoot.ai/api-reference/prompt-cache
+versioning:
+  style: uri-path
+  current: v1beta
+  ref: lifecycle/overshootai-lifecycle.yml
+error_envelope:
+  shapes:
+    - '{ "detail": "<message>" }  (stream lifecycle + billing)'
+    - '{ "detail": { "error": { "message","type","code" } } }  (chat completions)'
+  ref: errors/overshootai-problem-types.yml
+rate_limit_signaling:
+  status_code: 429
+  headers: [x-ratelimit-remaining, retry-after]
+  ref: rate-limits/overshootai-rate-limits.yml
+billing:
+  model: prepaid-credits
+  unit: microcents (1 cent = 1,000,000 microcents)
+  detail: Money fields use integer microcents; inference returns 402 when billing denies a request.

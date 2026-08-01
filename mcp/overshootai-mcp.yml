@@ -1,0 +1,45 @@
+generated: '2026-07-20'
+method: derived
+status: candidate
+source: openapi/overshootai-openapi.yaml
+note: >-
+  No official hosted/remote MCP server was found for Overshoot (checked docs, the
+  overshoot-ai GitHub org, and MCP registries). The overshoot-ai/livekit-vision-agent
+  repo is an agent example, not an MCP server. The tools below are a CANDIDATE
+  surface derived one-per-operation from the published OpenAPI, offered as a
+  starting point — not an advertised server. No MCPServer pointer is wired in
+  apis.yml because no real server exists.
+server:
+  name: overshoot
+  transport: http
+tools:
+  - name: create_stream
+    description: Create a live video inference stream and get LiveKit publish details.
+    source_operation: openapi/overshootai-openapi.yaml#createStream
+  - name: get_stream
+    description: Inspect a stream's lifecycle state and frame availability.
+    source_operation: openapi/overshootai-openapi.yaml#getStream
+  - name: keepalive_stream
+    description: Renew the stream lease (call every 10-20s) and pay for elapsed time.
+    source_operation: openapi/overshootai-openapi.yaml#keepaliveStream
+  - name: delete_stream
+    description: End a stream and release its resources.
+    source_operation: openapi/overshootai-openapi.yaml#deleteStream
+  - name: list_models
+    description: List available vision-language model IDs (no auth).
+    source_operation: openapi/overshootai-openapi.yaml#listModels
+  - name: chat_completions
+    description: Ask a VLM questions about a stream's frames (OpenAI-compatible).
+    source_operation: openapi/overshootai-openapi.yaml#chatCompletions
+  - name: list_pricing
+    description: List public model prices in integer microcents (no auth).
+    source_operation: openapi/overshootai-openapi.yaml#listPricing
+  - name: get_pricing
+    description: Return pricing for one model.
+    source_operation: openapi/overshootai-openapi.yaml#getPricing
+  - name: get_balance
+    description: Return the authenticated user's prepaid balance.
+    source_operation: openapi/overshootai-openapi.yaml#getBalance
+  - name: create_checkout
+    description: Create a checkout session to buy prepaid credits.
+    source_operation: openapi/overshootai-openapi.yaml#createCheckout

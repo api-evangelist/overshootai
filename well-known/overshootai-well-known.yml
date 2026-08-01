@@ -1,0 +1,27 @@
+generated: '2026-07-20'
+method: searched
+note: >-
+  Probed the standard /.well-known/ discovery surface on the API host, the docs
+  host, and the root marketing host. Only llms.txt (a docs convention, not a
+  /.well-known document) was served. No security.txt, OIDC, OAuth authorization
+  server, api-catalog, or ai-plugin.json documents are published. Absence recorded
+  as valid data.
+hosts:
+  - host: https://api.overshoot.ai
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+  - host: https://docs.overshoot.ai
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/llms.txt, status: 200, note: redirects to /llms.txt convention}
+  - host: https://overshoot.ai
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}

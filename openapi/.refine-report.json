@@ -1,0 +1,28 @@
+{
+  "provider": "overshootai",
+  "sources": [
+    "overshootai-billing-api-openapi.yml",
+    "overshootai-chat-api-openapi.yml",
+    "overshootai-healthz-api-openapi.yml",
+    "overshootai-metrics-api-openapi.yml",
+    "overshootai-models-api-openapi.yml",
+    "overshootai-readyz-api-openapi.yml",
+    "overshootai-streams-api-openapi.yml",
+    "overshootai-v1beta-api-openapi.yml"
+  ],
+  "outputs": [
+    "overshootai-billing-api-openapi.yml",
+    "overshootai-chat-api-openapi.yml",
+    "overshootai-healthz-api-openapi.yml",
+    "overshootai-metrics-api-openapi.yml",
+    "overshootai-models-api-openapi.yml",
+    "overshootai-readyz-api-openapi.yml",
+    "overshootai-streams-api-openapi.yml",
+    "overshootai-v1beta-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

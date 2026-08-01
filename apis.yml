@@ -1,22 +1,293 @@
 aid: overshootai
 name: overshoot.ai
-description: overshoot.ai is a company surfaced as a portfolio company of a16z and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Overshoot is real-time AI vision infrastructure. It ingests live video streams
+  over WebRTC (LiveKit) and lets developers query those frames with vision-language
+  models through an OpenAI-compatible chat completions API, returning structured
+  results such as bounding boxes, pixel coordinates, OCR text, and JSON in as little
+  as 200ms. The REST API manages the full stream lifecycle (create, keepalive,
+  inspect, delete), lists available VLMs from Overshoot, Anthropic, Google, and
+  OpenAI, and handles prepaid credit billing. Overshoot is a Y Combinator and a16z
+  portfolio company building the vision layer for accessibility, security monitoring,
+  sports analysis, robotics, retail analytics, and structured data extraction from
+  live video.
 url: https://raw.githubusercontent.com/api-evangelist/overshootai/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - a16z
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: enriched-from-public-api
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-20'
 tags:
 - Company
-apis: []
+- Artificial Intelligence
+- Computer Vision
+- Video
+- Real Time
+- Streaming
+- Machine Learning
+- Vision Language Models
+- Inference
+- Developer Tools
+image: https://overshoot.ai/favicon.ico
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+x-enrichment:
+  date: '2026-07-20'
+  status: enriched
+  artifacts_added: 19
+  pass: local-v1
+apis:
+- aid: overshootai:overshootai-billing-api
+  name: overshoot.ai Billing API
+  description: Pricing, prepaid balance, and checkout.
+  humanURL: https://docs.overshoot.ai/api-reference/introduction
+  baseURL: https://api.overshoot.ai/v1beta
+  tags:
+  - Billing
+  properties:
+  - type: OpenAPI
+    url: openapi/overshootai-billing-api-openapi.yml
+  - type: Authentication
+    url: authentication/overshootai-authentication.yml
+  - type: ErrorCatalog
+    url: errors/overshootai-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/overshootai-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/overshootai-lifecycle.yml
+  - type: Conventions
+    url: conventions/overshootai-conventions.yml
+  - type: Conformance
+    url: conformance/overshootai-conformance.yml
+  - type: DataModel
+    url: data-model/overshootai-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/overshootai-agentic-access.yml
+- aid: overshootai:overshootai-chat-api
+  name: overshoot.ai Chat API
+  description: The Chat API from overshoot.ai — 1 operation(s) for chat.
+  humanURL: https://docs.overshoot.ai/api-reference/introduction
+  baseURL: https://api.overshoot.ai/v1beta
+  tags:
+  - Chat
+  properties:
+  - type: OpenAPI
+    url: openapi/overshootai-chat-api-openapi.yml
+  - type: Authentication
+    url: authentication/overshootai-authentication.yml
+  - type: ErrorCatalog
+    url: errors/overshootai-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/overshootai-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/overshootai-lifecycle.yml
+  - type: Conventions
+    url: conventions/overshootai-conventions.yml
+  - type: Conformance
+    url: conformance/overshootai-conformance.yml
+  - type: DataModel
+    url: data-model/overshootai-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/overshootai-agentic-access.yml
+- aid: overshootai:overshootai-healthz-api
+  name: overshoot.ai Healthz API
+  description: The Healthz API from overshoot.ai — 1 operation(s) for healthz.
+  humanURL: https://docs.overshoot.ai/api-reference/introduction
+  baseURL: https://api.overshoot.ai/v1beta
+  tags:
+  - Healthz
+  properties:
+  - type: OpenAPI
+    url: openapi/overshootai-healthz-api-openapi.yml
+  - type: Authentication
+    url: authentication/overshootai-authentication.yml
+  - type: ErrorCatalog
+    url: errors/overshootai-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/overshootai-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/overshootai-lifecycle.yml
+  - type: Conventions
+    url: conventions/overshootai-conventions.yml
+  - type: Conformance
+    url: conformance/overshootai-conformance.yml
+  - type: DataModel
+    url: data-model/overshootai-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/overshootai-agentic-access.yml
+- aid: overshootai:overshootai-metrics-api
+  name: overshoot.ai Metrics API
+  description: The Metrics API from overshoot.ai — 1 operation(s) for metrics.
+  humanURL: https://docs.overshoot.ai/api-reference/introduction
+  baseURL: https://api.overshoot.ai/v1beta
+  tags:
+  - Metrics
+  properties:
+  - type: OpenAPI
+    url: openapi/overshootai-metrics-api-openapi.yml
+  - type: Authentication
+    url: authentication/overshootai-authentication.yml
+  - type: ErrorCatalog
+    url: errors/overshootai-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/overshootai-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/overshootai-lifecycle.yml
+  - type: Conventions
+    url: conventions/overshootai-conventions.yml
+  - type: Conformance
+    url: conformance/overshootai-conformance.yml
+  - type: DataModel
+    url: data-model/overshootai-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/overshootai-agentic-access.yml
+- aid: overshootai:overshootai-models-api
+  name: overshoot.ai Models API
+  description: The Models API from overshoot.ai — 2 operation(s) for models.
+  humanURL: https://docs.overshoot.ai/api-reference/introduction
+  baseURL: https://api.overshoot.ai/v1beta
+  tags:
+  - Models
+  properties:
+  - type: OpenAPI
+    url: openapi/overshootai-models-api-openapi.yml
+  - type: Authentication
+    url: authentication/overshootai-authentication.yml
+  - type: ErrorCatalog
+    url: errors/overshootai-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/overshootai-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/overshootai-lifecycle.yml
+  - type: Conventions
+    url: conventions/overshootai-conventions.yml
+  - type: Conformance
+    url: conformance/overshootai-conformance.yml
+  - type: DataModel
+    url: data-model/overshootai-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/overshootai-agentic-access.yml
+- aid: overshootai:overshootai-readyz-api
+  name: overshoot.ai Readyz API
+  description: The Readyz API from overshoot.ai — 1 operation(s) for readyz.
+  humanURL: https://docs.overshoot.ai/api-reference/introduction
+  baseURL: https://api.overshoot.ai/v1beta
+  tags:
+  - Readyz
+  properties:
+  - type: OpenAPI
+    url: openapi/overshootai-readyz-api-openapi.yml
+  - type: Authentication
+    url: authentication/overshootai-authentication.yml
+  - type: ErrorCatalog
+    url: errors/overshootai-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/overshootai-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/overshootai-lifecycle.yml
+  - type: Conventions
+    url: conventions/overshootai-conventions.yml
+  - type: Conformance
+    url: conformance/overshootai-conformance.yml
+  - type: DataModel
+    url: data-model/overshootai-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/overshootai-agentic-access.yml
+- aid: overshootai:overshootai-streams-api
+  name: overshoot.ai Streams API
+  description: Create, inspect, keep alive, and delete live video streams.
+  humanURL: https://docs.overshoot.ai/api-reference/introduction
+  baseURL: https://api.overshoot.ai/v1beta
+  tags:
+  - Streams
+  properties:
+  - type: OpenAPI
+    url: openapi/overshootai-streams-api-openapi.yml
+  - type: Authentication
+    url: authentication/overshootai-authentication.yml
+  - type: ErrorCatalog
+    url: errors/overshootai-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/overshootai-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/overshootai-lifecycle.yml
+  - type: Conventions
+    url: conventions/overshootai-conventions.yml
+  - type: Conformance
+    url: conformance/overshootai-conformance.yml
+  - type: DataModel
+    url: data-model/overshootai-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/overshootai-agentic-access.yml
+- aid: overshootai:overshootai-v1beta-api
+  name: overshoot.ai V1beta API
+  description: The V1beta API from overshoot.ai — 1 operation(s) for v1beta.
+  humanURL: https://docs.overshoot.ai/api-reference/introduction
+  baseURL: https://api.overshoot.ai/v1beta
+  tags:
+  - V1beta
+  properties:
+  - type: OpenAPI
+    url: openapi/overshootai-v1beta-api-openapi.yml
+  - type: Authentication
+    url: authentication/overshootai-authentication.yml
+  - type: ErrorCatalog
+    url: errors/overshootai-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/overshootai-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/overshootai-lifecycle.yml
+  - type: Conventions
+    url: conventions/overshootai-conventions.yml
+  - type: Conformance
+    url: conformance/overshootai-conformance.yml
+  - type: DataModel
+    url: data-model/overshootai-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/overshootai-agentic-access.yml
+common:
+- type: DeveloperPortal
+  url: https://platform.overshoot.ai
+- type: Documentation
+  url: https://docs.overshoot.ai
+- type: APIReference
+  url: https://docs.overshoot.ai/api-reference/introduction
+- type: GettingStarted
+  url: https://docs.overshoot.ai/quickstart
+- type: Blog
+  url: https://overshoot.ai/blogs
+- type: GitHubOrganization
+  url: https://github.com/overshoot-ai
+- type: SignUp
+  url: https://platform.overshoot.ai
+- type: Support
+  url: mailto:founders@overshoot.ai
+- type: Packages
+  url: packages/overshootai-packages.yml
+- type: SDKs
+  url: packages/overshootai-packages.yml
+- type: LLMsTxt
+  url: llms/overshootai-llms.txt
+- type: DomainSecurity
+  url: security/overshootai-domain-security.yml
+- type: AgentSkill
+  url: skills/_index.yml
