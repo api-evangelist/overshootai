@@ -265,6 +265,10 @@ apis:
   - type: AgenticAccess
     url: agentic-access/overshootai-agentic-access.yml
 common:
+- type: MCPServer
+  url: mcp/overshootai-mcp.yml
+- type: Overlay
+  url: overlays/overshootai-openapi-overlay.yaml
 - type: DeveloperPortal
   url: https://platform.overshoot.ai
 - type: Documentation
