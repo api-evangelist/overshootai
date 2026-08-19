@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Inference Service Billing Readyz API",
+    "version": "0.4.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Readyz",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Readyz",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/readyz"
+          },
+          "docs": "Readyz"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

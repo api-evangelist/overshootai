@@ -1,0 +1,74 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Inference Service Billing API",
+    "version": "0.4.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Billing",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List pricing",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/billing/pricing"
+          },
+          "docs": "List public model prices. No auth required. Money fields use **integer microcents**:\n`1 cent = 1,000,000 microcents`.\n"
+        },
+        {
+          "info": {
+            "name": "Get model pricing",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/billing/pricing/:model",
+            "params": [
+              {
+                "name": "model",
+                "value": "",
+                "type": "path",
+                "description": "Model identifier (may contain `/`)."
+              }
+            ]
+          },
+          "docs": "Return pricing for one model. The `model` path may contain slashes."
+        },
+        {
+          "info": {
+            "name": "Get prepaid balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/billing/accounts/me/balance"
+          },
+          "docs": "Return the authenticated user's prepaid balance. `balance_cents` is for display;\n`balance_microcents` is the exact billing unit. Inference can return `402` when\nbilling denies a request.\n"
+        },
+        {
+          "info": {
+            "name": "Create checkout session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/billing/checkout",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a checkout session for buying prepaid credits. `amount_cents` must be at\nleast `100`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

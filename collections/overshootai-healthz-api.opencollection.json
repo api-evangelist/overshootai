@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Inference Service Billing Healthz API",
+    "version": "0.4.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Healthz",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Healthz",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/healthz"
+          },
+          "docs": "Healthz"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

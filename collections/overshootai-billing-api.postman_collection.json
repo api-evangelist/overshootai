@@ -1,0 +1,570 @@
+{
+  "item": [
+    {
+      "id": "5d85d592-7783-424d-9903-374c2bf07e89",
+      "name": "Billing",
+      "description": {
+        "content": "Pricing, prepaid balance, and checkout.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a212878c-8857-48cb-acda-93436b36aae8",
+          "name": "List pricing",
+          "request": {
+            "name": "List pricing",
+            "description": {
+              "content": "List public model prices. No auth required. Money fields use **integer microcents**:\n`1 cent = 1,000,000 microcents`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "billing",
+                "pricing"
+              ],
+              "host": [
+                "api",
+                "overshoot",
+                "ai"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "37de6801-d933-4400-b4c0-0e66e4da0050",
+              "name": "List of public prices.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "billing",
+                    "pricing"
+                  ],
+                  "host": [
+                    "api",
+                    "overshoot",
+                    "ai"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"2cdfbed2-11c5-2093-5d1e-771d6b257788\",\n    \"model\": \"google/gemma-4-26B-A4B-it\",\n    \"provider\": \"google\",\n    \"version\": \"2026-06-01\",\n    \"input_microcents_per_token\": 10,\n    \"output_microcents_per_token\": 40,\n    \"public\": true,\n    \"cached_input_microcents_per_token\": 2\n  },\n  {\n    \"id\": \"68f1db8c-3a66-2248-88d7-5a36cbb8dfec\",\n    \"model\": \"google/gemma-4-26B-A4B-it\",\n    \"provider\": \"google\",\n    \"version\": \"2026-06-01\",\n    \"input_microcents_per_token\": 10,\n    \"output_microcents_per_token\": 40,\n    \"public\": true,\n    \"cached_input_microcents_per_token\": 2\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7fa54a1d-b10b-4d36-aa68-fa8ee9511296",
+          "name": "Get model pricing",
+          "request": {
+            "name": "Get model pricing",
+            "description": {
+              "content": "Return pricing for one model. The `model` path may contain slashes.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "billing",
+                "pricing",
+                ":model"
+              ],
+              "host": [
+                "api",
+                "overshoot",
+                "ai"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model",
+                  "description": "(Required) Model identifier (may contain `/`)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "50821e88-6215-4646-8b22-ac7caf90a368",
+              "name": "Pricing for the requested model.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "billing",
+                    "pricing",
+                    ":model"
+                  ],
+                  "host": [
+                    "api",
+                    "overshoot",
+                    "ai"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model",
+                      "description": "(Required) Model identifier (may contain `/`)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"4b56e507-0c51-7872-72cc-55525eb8b9f6\",\n  \"model\": \"google/gemma-4-26B-A4B-it\",\n  \"provider\": \"google\",\n  \"version\": \"2026-06-01\",\n  \"input_microcents_per_token\": 10,\n  \"output_microcents_per_token\": 40,\n  \"public\": true,\n  \"cached_input_microcents_per_token\": 2\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a1b6e6e4-06dd-4a95-80d3-59544d68ee18",
+              "name": "Price not found.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "billing",
+                    "pricing",
+                    ":model"
+                  ],
+                  "host": [
+                    "api",
+                    "overshoot",
+                    "ai"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model",
+                      "description": "(Required) Model identifier (may contain `/`)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "91e40724-85a2-4957-8ad5-bc5be1579440",
+          "name": "Get prepaid balance",
+          "request": {
+            "name": "Get prepaid balance",
+            "description": {
+              "content": "Return the authenticated user's prepaid balance. `balance_cents` is for display;\n`balance_microcents` is the exact billing unit. Inference can return `402` when\nbilling denies a request.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "billing",
+                "accounts",
+                "me",
+                "balance"
+              ],
+              "host": [
+                "api",
+                "overshoot",
+                "ai"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "014d4edd-4d90-4a50-bb2c-81c492a52234",
+              "name": "Current balance.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "billing",
+                    "accounts",
+                    "me",
+                    "balance"
+                  ],
+                  "host": [
+                    "api",
+                    "overshoot",
+                    "ai"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"user_id\": \"f2663502-261a-c67b-4d9e-6fffdc21eb67\",\n  \"balance_microcents\": 3079,\n  \"balance_cents\": 2017\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4d1dcc37-c647-4a27-80e5-61a7aff5e4bb",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "billing",
+                    "accounts",
+                    "me",
+                    "balance"
+                  ],
+                  "host": [
+                    "api",
+                    "overshoot",
+                    "ai"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ea20e029-7cb9-4e69-b41b-5a0e4085fb6a",
+          "name": "Create checkout session",
+          "request": {
+            "name": "Create checkout session",
+            "description": {
+              "content": "Create a checkout session for buying prepaid credits. `amount_cents` must be at\nleast `100`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "billing",
+                "checkout"
+              ],
+              "host": [
+                "api",
+                "overshoot",
+                "ai"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount_cents\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "658ab454-fa76-42f9-bb2d-b2fb6317c974",
+              "name": "Checkout URL.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "billing",
+                    "checkout"
+                  ],
+                  "host": [
+                    "api",
+                    "overshoot",
+                    "ai"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount_cents\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc057502-1af7-4707-b90f-65d24dad649b",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "billing",
+                    "checkout"
+                  ],
+                  "host": [
+                    "api",
+                    "overshoot",
+                    "ai"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount_cents\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c4ed71ef-4c57-4516-aacb-3398fe832557",
+              "name": "Validation error.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "billing",
+                    "checkout"
+                  ],
+                  "host": [
+                    "api",
+                    "overshoot",
+                    "ai"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount_cents\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"validation_error\",\n  \"message\": \"Request validation failed\",\n  \"details\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "b17b8b2e-f903-43da-b03e-ad416f893e5f",
+    "name": "Inference Service Billing API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Pricing, prepaid balance, and checkout.",
+      "type": "text/plain"
+    }
+  }
+}

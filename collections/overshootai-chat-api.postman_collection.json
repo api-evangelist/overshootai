@@ -1,0 +1,190 @@
+{
+  "item": [
+    {
+      "id": "098151d1-519d-40ec-9164-f4ac8a6ffbb3",
+      "name": "Chat",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "251ca030-f493-4c86-98b0-04661d853e22",
+          "name": "Chat Completions",
+          "request": {
+            "name": "Chat Completions",
+            "description": {},
+            "url": {
+              "path": [
+                "chat",
+                "completions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"messages\": [\n    {\n      \"key_0\": \"string\",\n      \"key_1\": 1497\n    },\n    {\n      \"key_0\": 8051,\n      \"key_1\": 8921,\n      \"key_2\": true,\n      \"key_3\": 5591.770978898398,\n      \"key_4\": false\n    }\n  ],\n  \"response_format\": {\n    \"key_0\": 549\n  },\n  \"max_completion_tokens\": \"<integer>\",\n  \"max_tokens\": \"<integer>\",\n  \"thread_id\": \"<string>\",\n  \"tools\": [\n    {\n      \"key_0\": true,\n      \"key_1\": 2952,\n      \"key_2\": \"string\",\n      \"key_3\": 3942\n    },\n    {\n      \"key_0\": false\n    }\n  ],\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "770b2f9f-583d-44a9-a216-2ee7bd1b06f4",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chat",
+                    "completions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"messages\": [\n    {\n      \"key_0\": true,\n      \"key_1\": 7192,\n      \"key_2\": true\n    },\n    {\n      \"key_0\": true\n    }\n  ],\n  \"response_format\": {\n    \"key_0\": \"string\"\n  },\n  \"max_completion_tokens\": \"<integer>\",\n  \"max_tokens\": \"<integer>\",\n  \"thread_id\": \"<string>\",\n  \"tools\": [\n    {\n      \"key_0\": true,\n      \"key_1\": true,\n      \"key_2\": 1620.999628714952\n    },\n    {\n      \"key_0\": true,\n      \"key_1\": true\n    }\n  ],\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c2cef513-5cee-4ba6-b212-dd1f7faa21fc",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chat",
+                    "completions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"messages\": [\n    {\n      \"key_0\": true,\n      \"key_1\": 7192,\n      \"key_2\": true\n    },\n    {\n      \"key_0\": true\n    }\n  ],\n  \"response_format\": {\n    \"key_0\": \"string\"\n  },\n  \"max_completion_tokens\": \"<integer>\",\n  \"max_tokens\": \"<integer>\",\n  \"thread_id\": \"<string>\",\n  \"tools\": [\n    {\n      \"key_0\": true,\n      \"key_1\": true,\n      \"key_2\": 1620.999628714952\n    },\n    {\n      \"key_0\": true,\n      \"key_1\": true\n    }\n  ],\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\",\n      \"input\": {},\n      \"ctx\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "aa09c249-ffe9-4cc7-9a60-7317de11259b",
+    "name": "Inference Service Billing Chat API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Pricing, prepaid balance, and checkout.",
+      "type": "text/plain"
+    }
+  }
+}

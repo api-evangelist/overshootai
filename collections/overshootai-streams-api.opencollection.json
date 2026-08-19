@@ -1,0 +1,110 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Inference Service Billing Streams API",
+    "version": "0.4.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Streams",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/streams",
+            "headers": [
+              {
+                "name": "X-Overshoot-Region",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates a live stream and returns a publish token. The current request body is\nempty. The retained frame history is fixed at 600 seconds.\n\nThe publish token is scoped to this stream and grants media publish permissions.\nRenew it through [`/keepalive`](#tag/Streams/operation/keepaliveStream) before it\nexpires.\n"
+        },
+        {
+          "info": {
+            "name": "Get stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/streams/:stream_id",
+            "headers": [
+              {
+                "name": "X-Overshoot-Region",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "stream_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID returned by `POST /streams`."
+              }
+            ]
+          },
+          "docs": "Returns current stream status and frame telemetry.\n\n`stream_time_ms` is zero until the first frame arrives. After that, it is measured\nfrom the first captured frame. When a stream ends, live counters and timestamps\nare snapshotted — `GET /streams/{id}` on an ended stream returns those final\nvalues; fields may be `null` if the stream ended before the value existed.\n"
+        },
+        {
+          "info": {
+            "name": "Delete stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/streams/:stream_id",
+            "headers": [
+              {
+                "name": "X-Overshoot-Region",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "stream_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID returned by `POST /streams`."
+              }
+            ]
+          },
+          "docs": "Request stream deletion."
+        },
+        {
+          "info": {
+            "name": "Renew stream lease",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/streams/:stream_id/keepalive",
+            "headers": [
+              {
+                "name": "X-Overshoot-Region",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "stream_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID returned by `POST /streams`."
+              }
+            ]
+          },
+          "docs": "Renews the stream lease and returns a fresh publish token. Clients should renew\nbefore the 5-minute lease expires, for example every 4 minutes, and pass the\nreturned token to the LiveKit SDK with `room.updateToken(...)`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
