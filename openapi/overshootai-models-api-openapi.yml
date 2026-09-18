@@ -1,8 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Inference Service Billing Models API
-  version: 0.4.0
-  description: Pricing, prepaid balance, and checkout.
+  title: Overshootai Models API
+  version: '1.0'
+  description: 'Operations tagged Models across 2 of this provider''s published API definitions: overshootai-inference-openapi-original.json, overshootai-openapi.yaml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.overshoot.ai/v1beta
 tags:
 - name: Models
 paths:
@@ -74,8 +76,57 @@ components:
       required:
       - data
       title: OpenAIModelsResponse
+    ModelInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: google/gemma-4-26B-A4B-it
+          description: Model identifier. Pass this verbatim as the `model` field on `/chat/completions`.
+        object:
+          type: string
+          default: model
+        created:
+          type: integer
+          description: Unix seconds when the model entry was registered.
+        owned_by:
+          type: string
+          example: overshoot
+        status:
+          type: string
+          enum:
+          - ready
+          - unavailable
+          description: '`ready` = currently serving. `unavailable` = not currently available.'
+      required:
+      - id
+      - object
+      - created
+      - owned_by
+      - status
+    ModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          default: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelInfo'
+      required:
+      - object
+      - data
   securitySchemes:
-    API Key:
+    API_Key:
       type: http
       description: Bearer <api_key>
       scheme: bearer
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key (e.g. `ovs_...`)
+      description: "Every public HTTP request requires `Authorization: Bearer <api_key>`, except\n`GET /models` and the public `/billing/pricing` endpoints.\n\n- `401` means the key is missing, unknown, or revoked.\n- `403` means the key is valid but cannot access the requested resource.\n- The publish token returned by `POST /streams` is only for publishing media to\n  LiveKit. It does not replace the API key for HTTP calls.\n"
+x-refined-from:
+- overshootai-inference-openapi-original.json
+- overshootai-openapi.yaml

@@ -1,0 +1,27 @@
+# Front Door AI Index — overshootai — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: overshootai
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.overshoot.ai
+  final_host: www.overshoot.ai
+  ownership: shared
+  owner: overshoot
+  shares_host_with:
+  - overshoot
+  inherited_from: null
+  verdict: scored
+  score: null
+  host_score: 5
+  density: null
+  words: 85
+  tiers:
+    agentic: 1
+    core: 4
+    model: 0
+  ambiguous: 0
+  top_terms:
+    AI: 4
+    inference: 1

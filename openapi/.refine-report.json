@@ -1,28 +1,51 @@
 {
   "provider": "overshootai",
   "sources": [
-    "overshootai-billing-api-openapi.yml",
-    "overshootai-chat-api-openapi.yml",
-    "overshootai-healthz-api-openapi.yml",
-    "overshootai-metrics-api-openapi.yml",
-    "overshootai-models-api-openapi.yml",
-    "overshootai-readyz-api-openapi.yml",
-    "overshootai-streams-api-openapi.yml",
-    "overshootai-v1beta-api-openapi.yml"
+    "_original/overshootai-inference-openapi-original.json",
+    "_original/overshootai-openapi.yaml"
   ],
   "outputs": [
-    "overshootai-billing-api-openapi.yml",
     "overshootai-chat-api-openapi.yml",
     "overshootai-healthz-api-openapi.yml",
     "overshootai-metrics-api-openapi.yml",
     "overshootai-models-api-openapi.yml",
     "overshootai-readyz-api-openapi.yml",
-    "overshootai-streams-api-openapi.yml",
-    "overshootai-v1beta-api-openapi.yml"
+    "overshootai-v1beta-api-openapi.yml",
+    "overshootai-billing-api-openapi.yml",
+    "overshootai-streams-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "overshootai-inference-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0; renamed 1 component key(s) illegal in 3.x (e.g. API Key)",
+    "overshootai-inference-openapi-original.json: tagged paths GET /healthz -> Healthz",
+    "overshootai-inference-openapi-original.json: tagged paths GET /readyz -> Readyz",
+    "overshootai-inference-openapi-original.json: tagged paths GET /metrics -> Metrics",
+    "overshootai-inference-openapi-original.json: tagged paths GET /v1beta/models -> V1beta",
+    "overshootai-inference-openapi-original.json: tagged paths GET /v1/models -> Models",
+    "overshootai-inference-openapi-original.json: tagged paths GET /models -> Models",
+    "overshootai-inference-openapi-original.json: tagged paths POST /chat/completions -> Chat",
+    "overshootai-inference-openapi-original.json: declared missing tag: Chat",
+    "overshootai-inference-openapi-original.json: declared missing tag: Healthz",
+    "overshootai-inference-openapi-original.json: declared missing tag: Metrics",
+    "overshootai-inference-openapi-original.json: declared missing tag: Models",
+    "overshootai-inference-openapi-original.json: declared missing tag: Readyz",
+    "overshootai-inference-openapi-original.json: declared missing tag: V1beta",
+    "overshootai-openapi.yaml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "tag 'Chat' spans 2 source specs (overshootai-inference-openapi-original.json, overshootai-openapi.yaml): per-path servers applied",
+    "tag 'Models' spans 2 source specs (overshootai-inference-openapi-original.json, overshootai-openapi.yaml): per-path servers applied",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "overshootai-billing-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "overshootai-chat-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "overshootai-healthz-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "overshootai-metrics-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "overshootai-models-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "overshootai-readyz-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "overshootai-streams-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "overshootai-v1beta-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

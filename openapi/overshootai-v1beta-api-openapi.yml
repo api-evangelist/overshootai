@@ -1,8 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Inference Service Billing V1beta API
+  title: Inference Service V1beta API
   version: 0.4.0
-  description: Pricing, prepaid balance, and checkout.
 tags:
 - name: V1beta
 paths:
@@ -62,7 +61,7 @@ components:
       - data
       title: OpenAIModelsResponse
   securitySchemes:
-    API Key:
+    API_Key:
       type: http
       description: Bearer <api_key>
       scheme: bearer

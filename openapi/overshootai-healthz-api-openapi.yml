@@ -1,8 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Inference Service Billing Healthz API
+  title: Inference Service Healthz API
   version: 0.4.0
-  description: Pricing, prepaid balance, and checkout.
 tags:
 - name: Healthz
 paths:
@@ -20,7 +19,7 @@ paths:
       - Healthz
 components:
   securitySchemes:
-    API Key:
+    API_Key:
       type: http
       description: Bearer <api_key>
       scheme: bearer
